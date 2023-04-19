@@ -11,6 +11,7 @@ private:
 public:
     Item(const std::string& name = "", int price = 0);
     Item();
+    int price();
     friend std::ostream &operator<<(std::ostream &os, const Item &item);
     friend std::istream& operator>>(std::istream& is, Item& item);
 };

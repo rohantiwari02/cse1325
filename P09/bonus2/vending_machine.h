@@ -12,7 +12,7 @@ public:
     Vending_machine();
     Vending_machine(std::istream& ist);
     Vending_machine& operator[](int index);
-    void add(const Item& item);
+    void add(const Item& item, int price);
     void buy(int index);
     friend std::ostream& operator<<(std::ostream& os, const Vending_machine& machine);
 };

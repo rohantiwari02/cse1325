@@ -26,6 +26,10 @@ std::istream& operator>>(std::istream& is, Item& item) {
     return is;
 }
 
+int Item::price() {
+    return _price;
+}
+
 Item::Item() : Item("", 0) {
     
 }
