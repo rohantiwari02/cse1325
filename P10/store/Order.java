@@ -61,7 +61,7 @@ public class Order {
         for (Computer computer : computers) {
             sb.append("   ").append(computer.toString()).append("\n");
         }
-        sb.append("Total cost: $").append(String.format("%.2f", cost()));
+        sb.append("Total cost: $").append(String.format("%.2f", cost()/100.0));
         return sb.toString();
     }
 

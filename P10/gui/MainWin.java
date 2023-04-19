@@ -417,10 +417,7 @@ public class MainWin extends JFrame {
                 order.addComputer((Computer) cb.getSelectedItem());
                 ++computersAdded;
             }
-            // Add the selected Computer to the Order
-            Computer selectedComputer = (Computer) computerComboBox.getSelectedItem();
-            order.addComputer(selectedComputer);
-        
+            
     
         // If at least one computer was added to the Order, add it to the Store
         if (computersAdded > 0) {
