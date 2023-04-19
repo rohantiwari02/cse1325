@@ -1,19 +1,22 @@
 #include <iostream>
+#include <fstream>
 #include "item.h"
 #include "vending_machine.h"
 
 int main() {
     Vending_machine machine;
-
-    Item snickers("Snickers", 125);
-    Item chips("Chips", 250);
-
-    machine.add(snickers);
-    machine.add(chips);
-
+    std::ifstream ifs{"products.txt"};
+    if (!ifs) {
+        std::cerr << "Can't open input file\n";
+        return 1;
+    }
+    while (ifs) {
+        Item item;
+        ifs >> item;
+        machine.add(item, item.price());
+    }
     std::cout << machine << std::endl;
-
-    machine.buy(0);
-
+    machine.buy(0); // Buy the first item in the list
+    std::cout << machine << std::endl;
     return 0;
 }

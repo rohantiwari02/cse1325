@@ -7,7 +7,7 @@ Vending_machine::Vending_machine() { }
 Vending_machine::Vending_machine(std::istream& ist) {
     Item item{};
     while(ist >> item) {
-        if(ist) items.push_back(item);
+        if(ist) _items.push_back(item);
     }    
 }
 
