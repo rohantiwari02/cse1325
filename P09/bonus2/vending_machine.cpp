@@ -3,6 +3,7 @@
 #include <sstream>
 
 Vending_machine::Vending_machine() { }
+
 Vending_machine::Vending_machine(std::istream& ist) {
     Item item{};
     while(ist >> item) {
