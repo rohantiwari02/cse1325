@@ -8,6 +8,7 @@ import store.Order;
 
 import javax.swing.JFrame;           // for main window
 import javax.swing.JOptionPane;      // for standard dialogs
+import javax.swing.JTextField;
 // import javax.swing.JDialog;          // for custom dialogs (for alternate About dialog)
 import javax.swing.JMenuBar;         // row of menu selections
 import javax.swing.JMenu;            // menu selection that offers another menu
@@ -296,12 +297,43 @@ public class MainWin extends JFrame {
 
     protected void onQuitClick() {System.exit(0);}   // Exit the game
     
+
+    
+    String[] UnifiedDialog(String[] fields, String title, String iconFilename) {
+        String[] results = null;
+        ImageIcon images = null;
+        if(iconFilename != null){
+            images = new ImageIcon(iconFilename);
+        }
+        // Widgets will include a label and JTextField for each field
+        Object[] widgets = new Object[2*fields.length];
+            
+         // Create the widget pairs           
+        for(int i=0; i<fields.length; ++i) {
+            widgets[2*i] = new JLabel("<html><br>" + fields[i] + "</br></html>");
+            widgets[2*i+1] = new JTextField();
+        }
+         
+         // Show the dialog
+        int button = JOptionPane.showConfirmDialog(this, widgets, title,
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, images);
+             
+         // If the OK button was pressed, extract result from widgets
+        if(button == JOptionPane.OK_OPTION) {
+            results = new String[fields.length];
+            for(int i=0; i<fields.length; ++i) {
+                JTextField textField = (JTextField) widgets[2*i+1];
+                results[i] = textField.getText();
+            }
+        } 
+        return results;
+    }
+
     protected void onInsertCustomerClick() {
         try { 
-            store.add(new Customer(
-                JOptionPane.showInputDialog(this, "Customer name", "New Customer", JOptionPane.QUESTION_MESSAGE),
-                JOptionPane.showInputDialog(this, "Customer email", "New Customer", JOptionPane.QUESTION_MESSAGE)
-            ));
+            String[] results = UnifiedDialog(new String[]{"Name", "Email"}, "New Customer", "gui/resources/add_customer.png");
+
+            store.add(new Customer(results[0], results[1]));
             setDirty(true);
             onViewClick(Record.CUSTOMER);
         } catch(NullPointerException e) {
@@ -312,28 +344,27 @@ public class MainWin extends JFrame {
             
     protected void onInsertOptionClick() { 
         try { 
-            store.add(new Option(
-                JOptionPane.showInputDialog(this, "Option name", "New Option", JOptionPane.QUESTION_MESSAGE),
-                (long) (100.0 * Double.parseDouble(
-                    JOptionPane.showInputDialog(this, "Option cost", "New Option", JOptionPane.QUESTION_MESSAGE)))
-            ));
+            String[] results = UnifiedDialog(new String[]{"Name", "Cost"}, "New Option", "gui/resources/add_option.png");
+            
+            store.add(new Option(results[0], (long) (100.0 * Double.parseDouble(results[1]))));    
             setDirty(true);
             onViewClick(Record.OPTION);
         } catch(NullPointerException e) {
         } catch(Exception e) {
-            JOptionPane.showMessageDialog(this, e, "Customer Not Created", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, e, "Option Not Created", JOptionPane.ERROR_MESSAGE);
         }
     
     }
             
     protected void onInsertComputerClick() { 
-        try { 
-            Computer c = new Computer(
-                JOptionPane.showInputDialog(this, "Computer name", "New Computer", JOptionPane.QUESTION_MESSAGE),
-                JOptionPane.showInputDialog(this, "Computer model", "New Computer", JOptionPane.QUESTION_MESSAGE)
-            );
+        try {
+            String[] results = UnifiedDialog(new String[]{"Computer Name", "Computer Model"}, "New Computer", "gui/resources/add_computer.png");
+            if(results == null)
+                return; 
+            Computer c = new Computer(results[0], results[1]);
+
             JComboBox<Object> cb = new JComboBox<>(store.options());
-            int optionsAdded = 0; // Don't add computers with no options
+            int optionsAdded = 0; 
             while(true) {
                 int button = JOptionPane.showConfirmDialog(this, cb, "Another Option?", JOptionPane.YES_NO_OPTION);
                 if(button != JOptionPane.YES_OPTION) break;
@@ -353,67 +384,53 @@ public class MainWin extends JFrame {
     }
 
     private void onInsertOrderClick() {
-        // Get list of customers
-        ArrayList<Customer> customers = store.getCustomers();
-    
-        // If no customers exist, create one first
-        if (customers.isEmpty()) {
-            onInsertCustomerClick();
-            customers = store.getCustomers();
-    
-            // If no customer is created, return
-            if (customers.isEmpty()) {
-                return;
+
+        try {
+            Object[] customers = store.customers();
+            if(customers.length == 0) {
+                onInsertCustomerClick();
+                customers = store.customers();
+                if(customers.length == 0) return;
             }
-        }
-    
-        // If only one customer exists, use it
-        Customer customer = null;
-        if (customers.size() == 1) {
-            customer = customers.get(0);
-        } else {
-            // If multiple customers exist, display a dialog to select one
-            JComboBox<Customer> customerComboBox = new JComboBox<>(customers.toArray(new Customer[customers.size()]));
-            int result = JOptionPane.showConfirmDialog(this, customerComboBox, "Order for which Customer?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-    
-            // If user clicked Cancel, return
-            if (result == JOptionPane.CANCEL_OPTION) {
-                return;
+            Customer customer = (Customer) customers[0];
+            if(customers.length > 1) {
+                JLabel label = new JLabel("Order for which Customer?");
+                JComboBox<Object> cb = new JComboBox<>(customers);
+                int button = JOptionPane.showConfirmDialog(this, new Object[]{label, cb}, "New Order", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                if(button != JOptionPane.OK_OPTION) return;
+                customer = (Customer) cb.getSelectedItem();
             }
-    
-            // Get the selected customer
-            customer = (Customer) customerComboBox.getSelectedItem();
-        }
-    
-        // Create a new Order for the selected Customer
-        Order order = new Order(customer);
-    
-        // Loop to add Computers to the Order
-        while (true) {
-            // Show a dialog to select a Computer to add to the Order
-            ArrayList<Computer> availableComputers = store.getAvailableComputers();
-            if (availableComputers.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No available computers to add to order.");
-                break;
+       
+            Order order = new Order(customer);
+            JComboBox<Object> cb = new JComboBox<>(store.computers());
+            int computersAdded = 0; // Don't add orders with no computers
+            while(true) {
+                // Show the order thus far as part of the dialog
+                JLabel label = new JLabel("<html><p>" + order.toString().replaceAll("\n", "<br/>") + "</p></html>");
+                int button = JOptionPane.showConfirmDialog(this, new Object[]{label, cb}, "Another Computer?", 
+                    JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+                    
+                // Exit loop when No (or X) is clicked
+                if(button != JOptionPane.YES_OPTION) break;
+                
+                // Add the selected Option
+                order.addComputer((Computer) cb.getSelectedItem());
+                ++computersAdded;
             }
-            JComboBox<Computer> computerComboBox = new JComboBox<>(availableComputers.toArray(new Computer[availableComputers.size()]));
-            int result = JOptionPane.showConfirmDialog(this, computerComboBox, "Add Computer to Order", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-    
-            // If user clicked Cancel or there are no available computers left, break out of loop
-            if (result == JOptionPane.CANCEL_OPTION) {
-                break;
-            }
-    
             // Add the selected Computer to the Order
             Computer selectedComputer = (Computer) computerComboBox.getSelectedItem();
             order.addComputer(selectedComputer);
-        }
+        
     
         // If at least one computer was added to the Order, add it to the Store
-        if (!order.getComputers().isEmpty()) {
-            store.addOrder(order);
+        if (computersAdded > 0) {
+            store.add(order);
             setDirty(true);
-            displayOrders();
+            onViewClick(Record.ORDER);
+            } 
+        }catch(NullPointerException e) {
+        } catch(Exception e) {
+            JOptionPane.showMessageDialog(this, e, "Order Not Created", JOptionPane.ERROR_MESSAGE);
         }
     }
     
