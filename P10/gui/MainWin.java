@@ -47,8 +47,8 @@ import java.awt.image.BufferedImage; // holds an image loaded from a file
 public class MainWin extends JFrame {
     private final String NAME = "ELSA";
     private final String EXTENSION = "elsa";
-    private final String VERSION = "0.3";
-    private final String FILE_VERSION = "1.0";
+    private final String VERSION = "0.4";
+    private final String FILE_VERSION = "2.0";
     private final String MAGIC_COOKIE = "⮚Ě1şà⮘";
     private final String DEFAULT_STORE_NAME = "New " + NAME + " Store";
 
@@ -128,7 +128,7 @@ public class MainWin extends JFrame {
         // ///////////// //////////////////////////////////////////////////////////
         // T O O L B A R
         // Add a toolbar to the PAGE_START region below the menu
-        JToolBar toolbar = new JToolBar("Nim Controls");
+        JToolBar toolbar = new JToolBar("ELSA");
 
        // Add a New ELSA store icon
         JButton anewButton  = new JButton(new ImageIcon("gui/resources/anew.png"));
