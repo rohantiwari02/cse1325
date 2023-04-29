@@ -73,24 +73,19 @@ public class Store {
         while(numOptions-- > 0)
             orders.add(new Order(br));
     }
+
+    private void save(BufferedWriter bw, ArrayList<? extends Saveable> saveables) throws IOException {
+        bw.write("" + saveables.size() + '\n');
+        for(Saveable saveable : saveables)
+            saveable.save(bw);
+    }
     public void save(BufferedWriter bw) throws IOException {
         bw.write(name + '\n');
         
-        bw.write("" + customers.size() + '\n');
-        for(Customer customer : customers)
-            customer.save(bw);
-
-        bw.write("" + options.size() + '\n');
-        for(Option option : options)
-            option.save(bw);
-
-        bw.write("" + computers.size() + '\n');
-        for(Computer computer : computers)
-            computer.save(bw);
-
-        bw.write("" + orders.size() + '\n');
-        for(Order order : orders)
-            order.save(bw);
+        save(bw, customers);
+        save(bw, options);
+        save(bw, computers);
+        save(bw, orders);
 
     }
     
