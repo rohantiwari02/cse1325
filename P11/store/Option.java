@@ -1,10 +1,11 @@
 package store;
 
+import java.util.Objects;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
-public class Option {
+public class Option implements Saveable{
     protected String name;
     protected long cost;
 
@@ -14,19 +15,21 @@ public class Option {
         this.cost = cost;
     }
 
+    public long cost() {
+        return this.cost;
+    }
+
     public Option(BufferedReader br) throws IOException  {
         this.name = br.readLine();
         this.cost = Long.parseLong(br.readLine());
     }
 
+    @Override
     public void save(BufferedWriter bw) throws IOException {
         bw.write(name + '\n');
         bw.write("" + Long.toString(cost) + '\n');
     }
 
-    public long cost() {
-        return this.cost;
-    }
     
     @Override
     public String toString() {
@@ -41,6 +44,11 @@ public class Option {
             return false;
         Option c = (Option) o;
         return (name == c.name) && (cost == c.cost);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, cost);
     }
 
     

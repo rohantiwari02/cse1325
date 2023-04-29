@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Objects;
 
 
-public class Order {
+public class Order implements Saveable{
     private static long nextOrderNumber = 0;
     private long orderNumber;
     private Customer customer;
@@ -37,6 +38,7 @@ public class Order {
             computers.add(new Computer(br));
     }
 
+    @Override
     public void save(BufferedWriter bw) throws IOException {
         bw.write(Long.toString(orderNumber) + '\n');
         this.customer.save(bw);
@@ -86,5 +88,10 @@ public class Order {
             }
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(customer, computers);
     }
 }

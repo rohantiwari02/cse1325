@@ -21,6 +21,8 @@ public class Customer implements Comparable<Customer>, Saveable{
         this.name = br.readLine();
         this.email = br.readLine();
     }
+
+    @Override
     public void save(BufferedWriter bw) throws IOException {
         bw.write(name + '\n');
         bw.write(email + '\n');
@@ -45,5 +47,12 @@ public class Customer implements Comparable<Customer>, Saveable{
     public int hashCode() {
         return Objects.hash(name, email);
     }
-    
+    @Override
+    public int compareTo(Customer rightCustomer) {
+        int result = this.name.compareTo(rightCustomer.name);
+        if(result == 0) {
+            result = this.email.compareTo(rightCustomer.email);
+        }
+        return result;
+    }
 }

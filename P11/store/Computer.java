@@ -36,6 +36,7 @@ public class Computer implements Saveable {
             options.add(new Option(br));
     }
     
+    @Override
     public void save(BufferedWriter bw) throws IOException {
         bw.write(name + "\n");
         bw.write(model + "\n");
