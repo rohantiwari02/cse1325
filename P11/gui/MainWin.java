@@ -45,11 +45,29 @@ import java.awt.Font;                // rich text in a JLabel or similar widget
 import java.awt.image.BufferedImage; // holds an image loaded from a file
 
 public class MainWin extends JFrame {
+
+    
+
+    private Store store;                    // The current Elsa store    
+    private JLabel display;                 // Display page of data
+
+    private File filename;
+    
+    private JMenuItem save;
+    private JMenuItem saveAs;
+    private JButton saveButton;
+    private JButton saveAsButton;
+
+
+
+
+
+
     private final String NAME = "ELSA";
     private final String EXTENSION = "elsa";
-    private final String VERSION = "0.4";
-    private final String FILE_VERSION = "2.0";
-    private final String MAGIC_COOKIE = "⮚Ě1şà⮘";
+    private final String VERSION = "0.5";
+    private final String FILE_VERSION = "3.0";
+    private final String MAGIC_COOKIE = "This cookie is magic!";
     private final String DEFAULT_STORE_NAME = "New " + NAME + " Store";
 
     public enum Record {CUSTOMER, OPTION, COMPUTER, ORDER};
@@ -527,16 +545,5 @@ public class MainWin extends JFrame {
         saveButton.setEnabled(isDirty);
         saveAsButton.setEnabled(isDirty);
     };
-
-
-    private Store store;                    // The current Elsa store    
-    private JLabel display;                 // Display page of data
-
-    private File filename;
-    
-    private JMenuItem save;
-    private JMenuItem saveAs;
-    private JButton saveButton;
-    private JButton saveAsButton;
 
 }

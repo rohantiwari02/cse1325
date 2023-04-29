@@ -9,7 +9,7 @@ public class TestStore {
         int result = 0;  // non-zero is a failure
         int vector = 1;  // single bit representing the test
     
-        Store store = new Store("Tester Joes");
+        Store store = new Store("Testing Store");
         
         // Test Customer
         Object[] customers = new Object[]{
