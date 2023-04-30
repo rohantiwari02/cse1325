@@ -11,10 +11,10 @@ import java.util.TreeSet;
 public class Store {
     
     private String name;
-    private ArrayList<Customer> customers = new ArrayList<>();
-    private ArrayList<Option> options = new ArrayList<>();
-    private ArrayList<Computer> computers = new ArrayList<>();
-    private ArrayList<Order> orders = new ArrayList<>();
+    private Set<Customer> customers = new TreeSet<>();
+    private Set<Option> options = new HashSet<>();
+    private Set<Computer> computers = new HashSet<>();
+    private Set<Order> orders = new HashSet<>();
 
     public Store(String name) {
         this.name = name;
@@ -74,9 +74,9 @@ public class Store {
             orders.add(new Order(br));
     }
 
-    private void save(BufferedWriter bw, ArrayList<? extends Saveable> saveables) throws IOException {
+    private void save(BufferedWriter bw, Set<? extends Saveable> saveables) throws IOException {
         bw.write("" + saveables.size() + '\n');
-        for(Saveable saveable : saveables)
+        for(var saveable : saveables)
             saveable.save(bw);
     }
     public void save(BufferedWriter bw) throws IOException {
@@ -88,6 +88,7 @@ public class Store {
         save(bw, orders);
 
     }
+    
     
     
 }
