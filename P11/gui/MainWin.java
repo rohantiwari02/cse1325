@@ -59,10 +59,6 @@ public class MainWin extends JFrame {
     private JButton saveAsButton;
 
 
-
-
-
-
     private final String NAME = "ELSA";
     private final String EXTENSION = "elsa";
     private final String VERSION = "0.5";
